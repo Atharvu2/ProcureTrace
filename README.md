@@ -1,36 +1,181 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# ProcureTrace
 
-## Getting Started
+**Automated Public Procurement Anomaly Detection Platform**
 
-First, run the development server:
+ProcureTrace is an auditing system I built to tackle a real problem in government procurement: finding the suspicious patterns that manual reviewers miss. The platform ingests tender, bid, vendor, contract, and shipment data, runs deterministic anomaly detection algorithms across it, and surfaces prioritized cases for human investigators.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+The core idea isn't just "flag outliers" — it's about helping auditors distinguish genuinely unusual behavior from legitimate market variation, especially in specialized procurement categories where normal looks weird.
+
+![ProcureTrace Dashboard](./docs/screenshot.png)
+
+---
+
+## Problem Statement
+
+> Government procurement generates large volumes of tenders, bids, vendors, contracts, and payments. Most transactions are legitimate, yet unusual bidding behavior, repeated awards, unexplained price differences, or relationships between participants can be difficult to identify through manual review.
+
+**UN SDG 16 — Peace, Justice and Strong Institutions**
+
+---
+
+## What It Does
+
+ProcureTrace works as a complete investigation workspace, not a single-page dashboard. An auditor can:
+
+1. **Start at the Command Center** — see the overall health of the procurement ecosystem, how many tenders were analyzed, how many got flagged, and what the current high-priority cases are.
+
+2. **Drill into a Case** — each case has a dedicated workspace with three columns: anomaly signals & context, an evidence relationship graph showing how entities connect, and a live AI agent trace that walks through the investigation step by step.
+
+3. **Explore the Network** — an interactive graph showing vendor relationships, co-bidding patterns, and which vendors connect to which flagged cases. Click any node to inspect it.
+
+4. **Browse Raw Data** — full tables for procurements, shipments, vendors, and bids. Everything the system flagged is traceable back to specific rows in the underlying data.
+
+5. **Run an AI Investigation** — click "Run AI Investigation" on any case and watch the autonomous agent execute a multi-step analysis: querying price baselines, checking vendor history, cross-referencing shipment manifests, and producing a structured finding.
+
+6. **Generate Reports** — export audit dossiers with evidence chains, confidence scores, and executive summaries.
+
+---
+
+## How It Works (Technical Architecture)
+
+### Detection Engines
+
+The system runs four parallel detection engines:
+
+- **Price Anomaly Engine** — compares each winning bid against historical regional median baselines. Flags deviations above 20%.
+- **Vendor Behavior Engine** — monitors win rates across category populations. A vendor winning 87% in a category where the average is 22% gets flagged.
+- **Bid Network Engine** — computes Jaccard similarity coefficients for co-bidding pairs across tender submissions. Identifies vendors that consistently appear together.
+- **Shipment Integrity Engine** — cross-checks physical warehouse scan receipts against dispatch manifests. Catches quantity discrepancies and unauthorized record modifications.
+
+### Scoring
+
+Each case gets a composite priority score (0–100) computed deterministically from:
+- Price deviation magnitude (weighted)
+- Vendor behavioral anomaly indicators
+- Co-bidding network density
+- Shipment discrepancy severity
+
+The score is fully explainable — every component is traceable to a specific data point.
+
+### Evidence-First Design
+
+Every claim the system makes is backed by:
+- The specific database record it references
+- The observed value vs. the population median
+- The computed deviation
+- A confidence percentage
+
+Nothing is a black box. An auditor (or a judge reviewing this) can trace any flag back to the exact row in the data.
+
+---
+
+## Tech Stack
+
+| Layer | Technology |
+|-------|-----------|
+| Framework | Next.js 16 (App Router) |
+| Language | TypeScript |
+| Styling | Tailwind CSS v4 |
+| State Management | Zustand |
+| Charts | Recharts |
+| Icons | Lucide React |
+| Deployment | Vercel |
+
+---
+
+## Project Structure
+
+```
+src/
+├── app/                    # Next.js App Router pages
+│   ├── page.tsx            # Command Center (dashboard)
+│   ├── cases/
+│   │   ├── page.tsx        # Case directory
+│   │   └── [caseId]/
+│   │       └── page.tsx    # Investigation workspace (hero page)
+│   ├── network/            # Vendor relationship graph
+│   ├── evidence/           # Evidence explorer
+│   ├── procurements/       # Raw procurement data tables
+│   ├── shipments/          # Shipment operations & integrity
+│   ├── analytics/          # Population-level analytics
+│   ├── audit/              # Immutable system audit log
+│   ├── reports/            # Exportable audit dossiers
+│   └── settings/           # System configuration & engine status
+├── components/
+│   └── layout/
+│       ├── Sidebar.tsx     # Persistent navigation
+│       └── Header.tsx      # Global search & status
+└── lib/
+    ├── data/
+    │   ├── types.ts        # TypeScript interfaces
+    │   └── mock-dataset.ts # Interconnected synthetic dataset
+    ├── store/
+    │   └── useStore.ts     # Zustand global state + agent simulation
+    ├── analysis/
+    │   └── score.ts        # Deterministic anomaly scoring
+    └── utils.ts            # Utility functions
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+---
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Running Locally
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+# Clone the repo
+git clone https://github.com/YOUR_USERNAME/ProcureTrace.git
+cd ProcureTrace
 
-## Learn More
+# Install dependencies
+npm install
 
-To learn more about Next.js, take a look at the following resources:
+# Start development server
+npm run dev
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Open [http://localhost:3000](http://localhost:3000).
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### Recommended Demo Flow
 
-## Deploy on Vercel
+1. Land on the Command Center → note the KPI metrics
+2. Click "Start Investigation" → opens PROC-482 (highest priority case)
+3. Read the anomaly signals on the left column
+4. Hover over any metric to see contextual tooltips
+5. Click "Run AI Investigation" → watch the agent trace populate in real time
+6. Navigate to Network Graph → explore vendor relationships
+7. Check Procurement Data → see the raw tables backing every claim
+8. Open Reports → see the generated audit dossier
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+---
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Design Decisions
+
+**Why deterministic scoring over ML?** For a government auditing tool, explainability matters more than accuracy. Every score component maps to a specific, auditable formula. An investigator needs to defend findings in court — "the model said so" doesn't work.
+
+**Why a unified dataset?** Every entity ID (PROC-482, VEN-9921, SHIP-19382) is consistent across every page. Click a vendor in the network graph and the same vendor appears in the procurement tables, shipment logs, and case files. This isn't multiple disconnected demos — it's one coherent data model.
+
+**Why the agent trace?** Modern auditing tools need to show their work. The AI investigation feature doesn't just produce a conclusion — it shows each step: which database was queried, what was found, how it connects to the existing evidence, and what the confidence level is.
+
+---
+
+## Dataset
+
+The platform uses a synthetic but realistic procurement dataset modeled on Indian government procurement patterns:
+
+- **3 prioritized cases** with different risk profiles (scores: 94, 87, 71)
+- **5 vendors** with varying behavioral patterns
+- **5 procurements** across Health, Education, and Infrastructure departments
+- **5 shipments** with integrity checks
+- **8 evidence items** with full provenance chains
+- **Complete audit trail** of system actions
+
+All data is interconnected — no orphaned records, no inconsistent references.
+
+---
+
+## License
+
+MIT
+
+---
+
+Built for the Smart Governance & Compliance track — UN SDG 16: Peace, Justice and Strong Institutions.
