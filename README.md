@@ -130,16 +130,6 @@ npm run dev
 
 Open [http://localhost:3000](http://localhost:3000).
 
-### Recommended Demo Flow
-
-1. Land on the Command Center → note the KPI metrics
-2. Click "Start Investigation" → opens PROC-482 (highest priority case)
-3. Read the anomaly signals on the left column
-4. Hover over any metric to see contextual tooltips
-5. Click "Run AI Investigation" → watch the agent trace populate in real time
-6. Navigate to Network Graph → explore vendor relationships
-7. Check Procurement Data → see the raw tables backing every claim
-8. Open Reports → see the generated audit dossier
 
 ---
 
@@ -152,26 +142,3 @@ Open [http://localhost:3000](http://localhost:3000).
 **Why the agent trace?** Modern auditing tools need to show their work. The AI investigation feature doesn't just produce a conclusion - it shows each step: which database was queried, what was found, how it connects to the existing evidence, and what the confidence level is.
 
 ---
-
-## Dataset
-
-The platform uses a synthetic but realistic procurement dataset modeled on Indian government procurement patterns:
-
-- **3 prioritized cases** with different risk profiles (scores: 94, 87, 71)
-- **5 vendors** with varying behavioral patterns
-- **5 procurements** across Health, Education, and Infrastructure departments
-- **5 shipments** with integrity checks
-- **8 evidence items** with full provenance chains
-- **Complete audit trail** of system actions
-
-All data is interconnected - no orphaned records, no inconsistent references.
-
----
-
-## License
-
-MIT
-
----
-
-
