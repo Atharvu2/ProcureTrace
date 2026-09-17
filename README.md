@@ -4,9 +4,7 @@
 
 ProcureTrace is an auditing system we built to tackle a real problem in government procurement: finding the suspicious patterns that manual reviewers miss. The platform ingests tender, bid, vendor, contract, and shipment data, runs deterministic anomaly detection algorithms across it, and surfaces prioritized cases for human investigators.
 
-The core idea isn't just "flag outliers" - it's about helping auditors distinguish genuinely unusual behavior from legitimate market variation, especially in specialized procurement categories where normal looks weird.
-
-[![ProcureTrace Dashboard](./docs/screenshot.png)](https://v1-opal-nine.vercel.app/)
+The core idea isn't just to flag outliers - it's about helping auditors distinguish genuinely unusual behavior from legitimate market variation, especially in specialized procurement categories where normal looks weird.
 
 **[View Live Demo ->](https://v1-opal-nine.vercel.app/)**
 
