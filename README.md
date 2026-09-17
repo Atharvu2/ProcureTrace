@@ -6,7 +6,9 @@ ProcureTrace is an auditing system we built to tackle a real problem in governme
 
 The core idea isn't just "flag outliers" - it's about helping auditors distinguish genuinely unusual behavior from legitimate market variation, especially in specialized procurement categories where normal looks weird.
 
-![ProcureTrace Dashboard](./docs/screenshot.png)
+[![ProcureTrace Dashboard](./docs/screenshot.png)](https://v1-opal-nine.vercel.app/)
+
+**[View Live Demo ->](https://v1-opal-nine.vercel.app/)**
 
 ---
 
